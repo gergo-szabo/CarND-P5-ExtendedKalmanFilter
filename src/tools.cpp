@@ -21,11 +21,11 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 	if (ground_truth.size() == 0) {
 		cout << "ERROR: CalculateRMSE() - The ground-truth vector is empty" << endl;
 		return rmse;
-    }
+ 	}
 	if (estimations.size() == 0) {
 		cout << "ERROR: CalculateRMSE() - The estimations vector is empty" << endl;
 		return rmse;
-    }
+ 	}
 	if (estimations.size() != ground_truth.size()) {
 		cout << "ERROR: CalculateRMSE() - The ground-truth and estimations vectors are not the same size." << endl;
 		return rmse;
@@ -45,7 +45,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 }
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
-  MatrixXd Hj(3,4);
+	MatrixXd Hj(3,4);
 	
 	// Sanity check for inputs:
 	if ( x_state.size() != 4 ) {
@@ -75,5 +75,5 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 		  -(py/c1), (px/c1), 0, 0,
 		  py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
 
-  return Hj;
+	return Hj;
 }
