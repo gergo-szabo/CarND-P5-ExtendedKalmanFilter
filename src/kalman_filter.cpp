@@ -1,4 +1,5 @@
 #include "kalman_filter.h"
+#define PI 3.14159265
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -64,10 +65,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd y = z - h;
   
   // Normalizing angles
-  while ( y(1) > M_PI || y(1) < -M_PI ) {
-    if ( y(1) > M_PI )  y(1) -= M_PI;
-    else                y(1) += M_PI;
-  }
+  if( y[1] > PI )   y[1] -= 2.f*PI;
+  if( y[1] < -PI )  y[1] += 2.f*PI;
     
   // Rest of the update cycle shared with the normal KF
   // H must be the Jacobian matrix in this case!
