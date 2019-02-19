@@ -86,13 +86,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       double vx = rho_dot * cos(phi);
       double vy = rho_dot * sin(phi);
 
-      x_init << px, py, vx , vy;
-      Hj_ = tools.CalculateJacobian(x_init);  
-      ekf_.Init(x_init, P_init, F_init, Hj_, R_radar_, Q_init);
+      x_init << px, py, vx , vy;  
+      ekf_.Init(x_init, P_init, F_init, H_laser_, Hj_, R_laser_, R_radar_, Q_init);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       x_init << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
-      ekf_.Init(x_init, P_init, F_init, H_laser_, R_laser_, Q_init);
+      ekf_.Init(x_init, P_init, F_init, H_laser_, Hj_, R_laser_, R_radar_, Q_init);
     }
 	
     // done initializing, no need to predict or update
@@ -131,16 +130,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    * Update
    */
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-    ekf_.R_ = R_radar_;
-    ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
-    cout << "update" << endl;
   }
   else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-    ekf_.R_ = R_laser_;
-    ekf_.H_ = H_laser_;
     ekf_.Update(measurement_pack.raw_measurements_);
-    cout << "updateEKF" << endl;
   }
 	
   // print the output
