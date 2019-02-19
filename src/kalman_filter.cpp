@@ -14,13 +14,16 @@ KalmanFilter::KalmanFilter() {}
 KalmanFilter::~KalmanFilter() {}
 
 void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
-                        MatrixXd &H_in, MatrixXd &R_in, MatrixXd &Q_in) {
+                        MatrixXd &H_in, MatrixXd &Hj_in, MatrixXd &R_l_in,
+                        MatrixXd &R_r_in, MatrixXd &Q_in) {
   // Kalman Filter variables
   x_ = x_in;  // object state
   P_ = P_in;  // object covariance matrix
   F_ = F_in;  // state transition matrix
-  H_ = H_in;  // measurement matrix
-  R_ = R_in;  // measurement covariance matrix
+  H_ = H_in;  // measurement matrix, normal KF
+  Hj_ = Hj_in;  // measurement matrix, extended KF
+  R_l_ = R_l_in;  // measurement covariance matrix, laser
+  R_r_ = R_r_in;  // measurement covariance matrix, radar
   I_ = MatrixXd::Identity(x_.size(), x_.size());  // identity matrix
   Q_ = Q_in;  // process covariance matrix
 }
@@ -39,7 +42,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   
   // Rest of the update cycle shared with the EKF
   MatrixXd Ht = H_.transpose();
-  MatrixXd S = H_ * P_ * Ht + R_;
+  MatrixXd S = H_ * P_ * Ht + R_l_;
   MatrixXd Si = S.inverse();
   MatrixXd K =  P_ * Ht * Si;
   
@@ -65,17 +68,18 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd y = z - h;
   
   // Normalizing angles
-  if( y[1] > PI )   y[1] -= 2.f*PI;
-  if( y[1] < -PI )  y[1] += 2.f*PI;
+  if( y(1) > PI )   y(1) -= 2.f*PI;
+  if( y(1) < -PI )  y(1) += 2.f*PI;
     
   // Rest of the update cycle shared with the normal KF
   // H must be the Jacobian matrix in this case!
-  MatrixXd Ht = H_.transpose();
-  MatrixXd S = H_ * P_ * Ht + R_;
+  Hj_ = tools.CalculateJacobian(x_);
+  MatrixXd Hjt = Hj_.transpose();
+  MatrixXd S = Hj_ * P_ * Hjt + R_r_;
   MatrixXd Si = S.inverse();
-  MatrixXd K =  P_ * Ht * Si;
+  MatrixXd K =  P_ * Hjt * Si;
   
   // New state
   x_ = x_ + (K * y);
-  P_ = (I_ - K * H_) * P_;
+  P_ = (I_ - K * Hj_) * P_;
 }
