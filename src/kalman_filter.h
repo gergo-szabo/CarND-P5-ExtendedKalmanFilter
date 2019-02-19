@@ -28,10 +28,10 @@ class KalmanFilter {
   Eigen::MatrixXd Hj_;
 
   // measurement covariance matrix, laser
-  Eigen::MatrixXd R_r;
+  Eigen::MatrixXd R_r_;
   
   // measurement covariance matrix, radar
-  Eigen::MatrixXd R_l;
+  Eigen::MatrixXd R_l_;
  
   // Identity matrix
   Eigen::MatrixXd I_; 
