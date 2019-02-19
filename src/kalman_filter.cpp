@@ -18,10 +18,10 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
   x_ = x_in;  // object state
   P_ = P_in;  // object covariance matrix
   F_ = F_in;  // state transition matrix
-  H_ = H_in; 	// measurement matrix
-  R_ = R_in; 	// measurement covariance matrix
-  I_ = MatrixXd::Identity(x_.size(), x_.size()); // identity matrix
-  Q_ = Q_in; 	// process covariance matrix
+  H_ = H_in;  // measurement matrix
+  R_ = R_in;  // measurement covariance matrix
+  I_ = MatrixXd::Identity(x_.size(), x_.size());  // identity matrix
+  Q_ = Q_in;  // process covariance matrix
 }
 
 void KalmanFilter::Predict() {
