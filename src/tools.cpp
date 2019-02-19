@@ -19,15 +19,15 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 	//  * the estimation vector size should not be zero
 	//  * the estimation vector size should equal ground truth vector size
 	if (ground_truth.size() == 0) {
-		cout << "ERROR: CalculateRMSE() - The ground-truth vector is empty" << endl;
+		std::cout << "ERROR: CalculateRMSE() - The ground-truth vector is empty" << std::endl;
 		return rmse;
  	}
 	if (estimations.size() == 0) {
-		cout << "ERROR: CalculateRMSE() - The estimations vector is empty" << endl;
+		std::cout << "ERROR: CalculateRMSE() - The estimations vector is empty" << std::endl;
 		return rmse;
  	}
 	if (estimations.size() != ground_truth.size()) {
-		cout << "ERROR: CalculateRMSE() - The ground-truth and estimations vectors are not the same size." << endl;
+		std::cout << "ERROR: CalculateRMSE() - The ground-truth and estimations vectors are not the same size." << std::endl;
 		return rmse;
 	}
 	
@@ -49,7 +49,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	
 	// Sanity check for inputs:
 	if ( x_state.size() != 4 ) {
-		cout << "ERROR: CalculateJacobian() - The state vector size is not 4." << endl;
+		std::cout << "ERROR: CalculateJacobian() - The state vector size is not 4." << std::endl;
 		return Hj;
 	}
 	
@@ -66,7 +66,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
 	// check division by zero
 	if (fabs(c1) < 0.0001) {
-		cout << "ERROR: CalculateJacobian() - Division by Zero" << endl;
+		std::cout << "ERROR: CalculateJacobian() - Division by Zero" << std::endl;
 		return Hj;
 	}
 
