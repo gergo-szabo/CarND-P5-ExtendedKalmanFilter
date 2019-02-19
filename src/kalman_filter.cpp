@@ -33,10 +33,7 @@ void KalmanFilter::Predict() {
   P_ = F_ * P_ * Ft + Q_;
 }
 
-void KalmanFilter::Update(const VectorXd &z) {
-  // TODO: Implement Sanity check
-  // H(2,4) and not H(3,4)(Jacobian)
-  
+void KalmanFilter::Update(const VectorXd &z) {  
   VectorXd y = z - H_ * x_;
   
   // Rest of the update cycle shared with the EKF
@@ -50,10 +47,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   P_ = (I_ - K * H_) * P_;
 }
 
-void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  // TODO: Implement Sanity check
-  // H(3,4)(Jacobian) and not H(2,4)
-  
+void KalmanFilter::UpdateEKF(const VectorXd &z) { 
   // For radar measurements, the functions that map the x vector [px, py, vx, vy] to polar coordinates are non-linear.
   // y = z - h(x') instead of y = z - H_ * x_
   double px = x_(0);
@@ -61,6 +55,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   double vx = x_(2);
   double vy = x_(3);
   double h1 = sqrt(px*px + py*py);
+  // Check to avoid dividing by zero
+  if (h1 < 0.00001)  return;
   double h2 = atan2(py, px);
   double h3 = (px*vx + py*vy) / h1;  
   VectorXd h = VectorXd(3);
@@ -74,6 +70,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   }
     
   // Rest of the update cycle shared with the normal KF
+  // H must be the Jacobian matrix in this case!
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
