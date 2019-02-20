@@ -1,12 +1,20 @@
 #ifndef TOOLS_H_
 #define TOOLS_H_
-
 #include <vector>
 #include "Eigen/Dense"
 
+using Eigen::VectorXd;
+using Eigen::MatrixXd;
+using std::vector;
+
 class Tools {
  public:
-  /**
+ 
+  VectorXd residual;
+  VectorXd lastSum;
+  VectorXd rmse;
+ 
+   /**
    * Constructor.
    */
   Tools();
