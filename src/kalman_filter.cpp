@@ -1,6 +1,8 @@
 #include "kalman_filter.h"
 #define PI 3.14159265
+#include <iostream>
 
+using namespace std;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -54,15 +56,18 @@ void KalmanFilter::Update(const VectorXd &z) {
 void KalmanFilter::UpdateEKF(const VectorXd &z) { 
   // For radar measurements, the functions that map the x vector [px, py, vx, vy] to polar coordinates are non-linear.
   // y = z - h(x') instead of y = z - H_ * x_
-  double px = x_(0);
-  double py = x_(1);
-  double vx = x_(2);
-  double vy = x_(3);
-  double h1 = sqrt(px*px + py*py);
+  float px = x_(0);
+  float py = x_(1);
+  float vx = x_(2);
+  float vy = x_(3);
+  float h1 = sqrt(px*px + py*py);
   // Check to avoid dividing by zero
-  if (h1 < 0.00001)  return;
-  double h2 = atan2(py, px);
-  double h3 = (px*vx + py*vy) / h1;  
+  if (h1 == 0.)  {
+    std::cout << "ERROR: Division by zero in UpdateEKF()" << std::endl;
+    return;
+  }
+  float h2 = atan2(py, px);
+  float h3 = (px*vx + py*vy) / h1;  
   VectorXd h = VectorXd(3);
   h << h1, h2, h3;
   VectorXd y = z - h;
