@@ -50,6 +50,8 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	float c1 = px0*px0+py0*py0;
 	float c2 = sqrt(c1);
 	float c3 = (c1*c2);
+
+	MatrixXd Hj(3,4);
 	
 	// check before division by zero
 	if (c1 == 0) {
@@ -58,7 +60,6 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	}
 	
 	// compute the Jacobian matrix
-	MatrixXd Hj(3,4);
 	Hj << (px0/c2), (py0/c2), 0, 0,
 		  -(py0/c1), (px0/c1), 0, 0,
 		  py0*(vx0*py0 - vy0*px0)/c3, px0*(px0*vy0 - py0*vx0)/c3, px0/c2, py0/c2;
