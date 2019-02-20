@@ -76,16 +76,15 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // Initialize Kalman filter with first measurement (state)
     VectorXd x_init(4);
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      double rho = measurement_pack.raw_measurements_[0]; // range
-      double phi = measurement_pack.raw_measurements_[1]; // bearing
-      double rho_dot = measurement_pack.raw_measurements_[2]; // velocity of rho
+      float rho = measurement_pack.raw_measurements_[0]; // range
+      float phi = measurement_pack.raw_measurements_[1]; // bearing
+      float rho_dot = measurement_pack.raw_measurements_[2]; // velocity of rho
       
       // Coordinates convertion from polar to cartesian
-      double px = rho * cos(phi);
-      double py = rho * sin(phi);
-      double vx = rho_dot * cos(phi);
-      double vy = rho_dot * sin(phi);
-
+      float px = rho * cos(phi);
+      float py = rho * sin(phi);
+      float vx = rho_dot * cos(phi);
+      float vy = rho_dot * sin(phi);
       x_init << px, py, vx , vy;  
       ekf_.Init(x_init, P_init, F_init, H_laser_, Hj_, R_laser_, R_radar_, Q_init);
     }
@@ -102,7 +101,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /**
    * Prediction
    */
-  double dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
+  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
   previous_timestamp_ = measurement_pack.timestamp_;
   
   // Update state transition matrix
@@ -113,11 +112,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
              0, 0, 0, 1;
 	
   // Update noise covariance matrix with time difference
-  double noise_ax = 9.0;  // Noise values are given
-  double noise_ay = 9.0;  // Noise values are given
-  double dt2 = dt * dt;
-  double dt3 = dt2 * dt;
-  double dt4 = dt3 * dt;
+  float noise_ax = 9.0;  // Noise values are given
+  float noise_ay = 9.0;  // Noise values are given
+  float dt2 = dt * dt;
+  float dt3 = dt2 * dt;
+  float dt4 = dt3 * dt;
   ekf_.Q_ = MatrixXd(4, 4);
   ekf_.Q_ << dt4/4*noise_ax, 0,              dt3/2*noise_ax, 0,
 	     0,              dt4/4*noise_ay, 0,              dt3/2*noise_ay,
