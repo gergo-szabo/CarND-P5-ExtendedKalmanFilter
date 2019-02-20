@@ -29,11 +29,11 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 		std::cout << "ERROR: CalculateRMSE() - The ground-truth and estimations vectors are not the same size." << std::endl;
 		return rmse;
 	}
-	
+
 	// Calculate RMSE
 	residual = estimations[estimations.size()-1] - ground_truth[estimations.size()-1];
 	residual = residual.array()*residual.array();	// coefficient-wise multiplication
-	lastSum += residual;	
+	lastSum += residual;
 	rmse = lastSum/estimations.size();
 	rmse = rmse.array().sqrt();
 
@@ -41,35 +41,27 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 }
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
-	MatrixXd Hj(3,4);
-	
-	// Sanity check for inputs:
-	if ( x_state.size() != 4 ) {
-		std::cout << "ERROR: CalculateJacobian() - The state vector size is not 4." << std::endl;
-		return Hj;
-	}
-	
-	// recover state parameters
-	double px = x_state(0);
-	double py = x_state(1);
-	double vx = x_state(2);
-	double vy = x_state(3);
-
+	float px0 = x_state(0);
+	float py0 = x_state(1);
+	float vx0 = x_state(2);
+	float vy0 = x_state(3);
+   
 	// pre-compute a set of terms to avoid repeated calculation
-	double c1 = px*px+py*py;
-	double c2 = sqrt(c1);
-	double c3 = (c1*c2);
-
-	// check division by zero
-	if (fabs(c1) < 0.0001) {
+	float c1 = px0*px0+py0*py0;
+	float c2 = sqrt(c1);
+	float c3 = (c1*c2);
+	
+	// check before division by zero
+	if (c1 == 0) {
 		std::cout << "ERROR: CalculateJacobian() - Division by Zero" << std::endl;
 		return Hj;
 	}
-
+	
 	// compute the Jacobian matrix
-	Hj << (px/c2), (py/c2), 0, 0,
-		  -(py/c1), (px/c1), 0, 0,
-		  py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
-
+	MatrixXd Hj(3,4);
+	Hj << (px0/c2), (py0/c2), 0, 0,
+		  -(py0/c1), (px0/c1), 0, 0,
+		  py0*(vx0*py0 - vy0*px0)/c3, px0*(px0*vy0 - py0*vx0)/c3, px0/c2, py0/c2;
+  
 	return Hj;
 }
