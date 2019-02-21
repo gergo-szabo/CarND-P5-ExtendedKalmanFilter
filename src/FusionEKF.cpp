@@ -92,7 +92,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       x_init << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
       ekf_.Init(x_init, P_init, F_init, H_laser_, Hj_, R_laser_, R_radar_, Q_init);
     }
-	
+    
+    previous_timestamp_ = measurement_pack.timestamp_;
+    
     // done initializing, no need to predict or update
     is_initialized_ = true;
     return;
