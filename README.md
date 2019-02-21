@@ -23,9 +23,9 @@ Detailed description of dependencies in Udacity repository.
 
 ### Results
 
-Red circle: input data, measured position by lidar
-Blue circle: input data, measured position by radar (angle represented by a marker)
-Green triangle: output of Kalman filter, estimated position of car
+* Red circle: input data, measured position by lidar
+* Blue circle: input data, measured position by radar (angle represented by a marker)
+* Green triangle: output of Kalman filter, estimated position of car
 
 ![Dataset 1](dataset1.png)
 
